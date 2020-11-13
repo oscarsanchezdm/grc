@@ -50,7 +50,7 @@ go get
 ```
 which will simply read go.mod file and download the packages automatically.
 
-Once you have the required packages, it's time to compile using make
+Once you have the required packages, compile it using
 ```
 make
 ```
