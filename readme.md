@@ -87,13 +87,9 @@ The server has several endpoints, which are defined below.  The curl examples us
 * **[DELETE] /grc/{isbn}** This endpoints will allow to delete the book entries that have the specified ISBN.
 `curl -X DELETE 192.168.64.4/grc/9272555810`
 
-<<<<<<< HEAD
 ### Recompiling the API server while it is running
 If the server needs to be recompiled, we will need to stop all the replicas and start them again, when the Docker Hub image has been updated.
-=======
-### Re-compiling the API server while it is running
-If the server needs to be re-compiled, we will need to stop all the replicas and start them again, when the Docker Hub image has been updated.
->>>>>>> 3dc6ba26f77823921dc2fdfe3e63cf75dc8fd9f5
+
 ```
 make
 docker build -t oscarsanchezdm/grc
