@@ -10,5 +10,5 @@ spec:
       paths:
         - path: /grc
           backend:
-            serviceName: grc
+            serviceName: grc-svc
             servicePort: 8000

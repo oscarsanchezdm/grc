@@ -15,7 +15,7 @@ This project was developed in three days, starting with no kind of knowledge of 
 The database stores book entries. Every entry consists of an identifier (the ISBN), a title, an author and a boolean about the availability. Please note that this is a learning project, thus it is not intended to simulate or recreate real situations. The identifier might not be unique, as a random function is used to generate an integer.
 
 ### Preparing the environment
-Before cloning this repo, you will need to [install Docker in your machine](https://docs.docker.com/desktop/). Intel Virtualization Technology is recommended to be enabled in your BIOS. Also, a Docker Hub account had to be created to push the containers images into its cloud, so make sure Docker is logged in in your account.
+Before cloning this repo, you will need to [install Docker in your machine](https://docs.docker.com/desktop/). Intel Virtualization Technology is recommended to be enabled in your BIOS.
 
 As the server is implemented with Go, you will need to have it installed. [Install instructions](https://golang.org/doc/install).
 
@@ -54,21 +54,22 @@ Once you have the required packages, compile it using
 ```
 make
 ```
-Once it has been compiled, docker will need to build the image before pushing it to Docker Hub. Note that these files are thought to be pushed in my Docker account, so for pushing it in another one you will need to change the project name in the following instructions
+Once it has been compiled, we will need to build the image with the specified tag.
 ```
-docker build -t oscarsanchezdm/grc
-docker push oscarsanchezdm/grc
+docker build -t grc .
 ```
 
-As we have the project image uploaded in Docker Hub server, we will make minikube to use it for the deployment. Minikube will deploy the API server and a Mongo server. For doing that, type
+As we have the image built, we will make minikube to use it for the deployment. Minikube will deploy the API server and a Mongo server. For doing that, type
 ```
-kubectl apply -n grc -f kubernetes/mongodb.yml
-kubectl apply -n grc -f kubernetes/grc.yml
+kubectl apply -n grc -f kubernetes/mongodb-svc.yml
+kubectl apply -n grc -f kubernetes/mongodb-depl.yml
+kubectl apply -n grc -f kubernetes/grc-svc.yml
+kubectl apply -n grc -f kubernetes/grc-depl.yml
 kubectl apply -n grc -f kubernetes/ingress.yml
 ```
 [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) will expose the REST API server to the outside. We will get the external IP address of the Ingress point using the following command
 ```
-kubectl ingress -n grc
+kubectl get ingress -n grc
 ```
 The output address will allow us to access to the API endpoints.
 
@@ -88,12 +89,11 @@ The server has several endpoints, which are defined below.  The curl examples us
 `curl -X DELETE 192.168.64.4/grc/9272555810`
 
 ### Recompiling the API server while it is running
-If the server needs to be recompiled, we will need to stop all the replicas and start them again, when the Docker Hub image has been updated.
+If the server needs to be recompiled, we will need to stop all the replicas and start them again, when the docker image has been built.
 
 ```
 make
-docker build -t oscarsanchezdm/grc
-docker push oscarsanchezdm/grc
-kubectl scale -n grc --replicas=0 delopyment grc
-kubectl scale -n grc --replicas=1 delopyment grc
+docker build -t grc .
+kubectl scale -n grc-depl --replicas=0 delopyment grc-depl
+kubectl scale -n grc-depl --replicas=1 delopyment grc-depl
 ```

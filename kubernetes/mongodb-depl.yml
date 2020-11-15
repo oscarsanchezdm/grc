@@ -1,23 +1,7 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: grc-mongodb
-  labels:
-    app: grc
-spec:
-  ports:
-    - port: 27017
-  selector:
-    app: grc
-    tier: mongodb
-  clusterIP: None
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongodb
-  labels:
-    app: grc
+  name: grc-mongodb-depl
 spec:
   selector:
     matchLabels:
@@ -36,4 +20,3 @@ spec:
         name: mongodb
         ports:
         - containerPort: 27017
-          name: mongodb
